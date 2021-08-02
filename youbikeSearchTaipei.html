@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YouBike2.0臺北市公共自行車即時資訊</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.14/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <style>
+        table{
+            margin: 10px;
+            border-radius: 10px;
+            background-color: rgb(216, 250, 253);
+        }
+        .atble_area{
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .title{
+            width: 100px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body> 
+    <div id="app">
+        <h1>YouBike2.0臺北市公共自行車即時資訊</h1>
+        <button @click="searchFun">{{search ? '隱藏' : '顯示'}}</button>
+        <div style="height: 10px; border-top: 1px solid rgb(64, 63, 63); margin-top:5px;">
+            <p style="background-color: rgb(37, 150, 187); height: 20px; width: 0px; margin: 0; display: flex; justify-content: center; opacity: 0;">Searching...</p>
+        </div>
+        <div v-if="search" class="atble_area">
+            <table v-for="(item, index) in fishery"> 
+                <tr>
+                    <td class="title">站點代號</td>
+                    <td>{{item.sno}}</td>
+                </tr>
+                <tr>
+                    <td class="title">場站中文名稱</td>
+                    <td>{{item.sna}}</td>
+                </tr>
+                <tr>
+                    <td class="title">場站總停車格</td>
+                    <td>{{item.tot}}</td>
+                </tr>
+                <tr>
+                    <td class="title">場站目前車輛數量</td>
+                    <td>{{item.sbi}}</td>
+                </tr>
+                <tr>
+                    <td class="title">場站區域</td>
+                    <td>{{item.sarea}}</td>
+                </tr>
+                <tr>
+                    <td class="title">資料更新時間</td>
+                    <td>{{item.mday}}</td>
+                </tr>
+                <tr>
+                    <td class="title">緯度</td>
+                    <td>{{item.lat}}</td>
+                </tr>
+                <tr>
+                    <td class="title">經度</td>
+                    <td>{{item.lng}}</td>
+                </tr>
+                <tr>
+                    <td class="title">地點</td>
+                    <td>{{item.ar}}</td>
+                </tr>
+                <tr>
+                    <td class="title">空位數量</td>
+                    <td>{{item.bemp}}</td>
+                </tr>
+                <tr>
+                    <td class="title">全站禁用狀態</td>
+                    <td>{{item.act}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+  
+    <script>
+        new Vue({
+            el: '#app',
+            data: { 
+                fishery: [],
+                search: false
+            },
+            methods: {
+                searchFun () {
+                    $('p').animate({width:'100%',opacity:1},3000,function(){
+                        $('p').text('Done!')
+                    })
+                    this.search = !this.search
+                    
+                }
+            },
+            mounted() {
+                $.getJSON('https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json').then(res => {this.fishery = res})
+            }
+        });
+        // $('button').click(function(){
+            
+
+        // })
+    </script>
+</body>
+</html>
